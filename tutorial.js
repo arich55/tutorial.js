@@ -271,4 +271,4 @@ function tutorial_item(id)
 }
 
 var tutorial = new tutorial;
-$(document).on('click',tutorial.clicktrap,function(){tutorial.next()});
+$(document).on('click',tutorial.clicktrap,function(e){e.preventDefault();tutorial.next()});
