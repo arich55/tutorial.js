@@ -21,22 +21,22 @@
 
 function tutorial()
 {
-	this.elementList 			= new Array;
-	this.position 				= 0;
-	this.lengthOfTutorial = 0;
-	this.container 				= "#tutorial";
-	this.items 						= "#tutorial-items";
-	this.item_container 	= "#tutorial-item-container";
-	this.item_outline 		= true;
-	this.clicktrap 				= "#tutorial-clicktrap";
-	this.zindex 					= 10000;
-	this.item_zindex 			= 10001;
-	this.overlay 					= '#tutorial-overlay';
-	this.overlay_color 		= '#000';
-	this.overlay_opacity 	= '0.90';
-	this.transition_speed	= 200;
-	this.scroll_speed			= 500;
-	this.alternate_scroll	= false;
+	this.elementList        = new Array;
+	this.position           = 0;
+	this.lengthOfTutorial   = 0;
+	this.container          = "#tutorial";
+	this.items              = "#tutorial-items";
+	this.item_container     = "#tutorial-item-container";
+	this.item_outline       = true;
+	this.clicktrap          = "#tutorial-clicktrap";
+	this.zindex             = 10000;
+	this.item_zindex        = 10001;
+	this.overlay            = '#tutorial-overlay';
+	this.overlay_color      = '#000';
+	this.overlay_opacity    = '0.90';
+	this.transition_speed   = 200;
+	this.scroll_speed       = 500;
+	this.alternate_scroll   = false;
 	this.current_item;
 	this.animation_speed;
 
@@ -94,7 +94,7 @@ function tutorial()
 
 	// prep the overlay with configurations.
 	tutorial.prototype.setup_overlay = function()
-	{		
+	{       
 		$(tutorial.overlay).css({
 			'position':'absolute',
 			'height':'100%',
@@ -190,14 +190,14 @@ function tutorial()
 	{
 		$("body").css("overflow","hidden");
 		$(document).bind('mousewheel DOMMouseScroll',function(e){ 
-        if(!e){ /* IE7, IE8, Chrome, Safari */ 
-        e = window.event; 
-		    }
-		    if(e.preventDefault) { /* Chrome, Safari, Firefox */ 
-		        e.preventDefault(); 
-		    } 
-		    e.returnValue = false;
-    });
+		if(!e){ /* IE7, IE8, Chrome, Safari */ 
+		e = window.event; 
+			}
+			if(e.preventDefault) { /* Chrome, Safari, Firefox */ 
+				e.preventDefault(); 
+			} 
+			e.returnValue = false;
+	});
 	}
 
 	tutorial.prototype.enable_scroll = function()
@@ -251,7 +251,7 @@ function tutorial_item(id)
 			'width':'100%',
 			'top':0,
 			'left':0,
-			'cursor':'pointer',			
+			'cursor':'pointer',         
 		});
 
 		if(tutorial.item_outline == true)
