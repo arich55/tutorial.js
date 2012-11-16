@@ -151,8 +151,12 @@
     <script src="../tutorial.js"></script>
 
     <script type="text/javascript">
-      var list = ['hero-unit','textbox','sidebar','learn-more'];
-      Tutorial.setup(list);
+      Tutorial.setup({
+        'hero-unit'  : 'This is the first',
+        'textbox'    : 'This is the second',
+        'sidebar'    : 'This is the third',
+        'learn-more' : 'This is the fourth',
+      });
       $("#learn-more").click(function(){Tutorial.start()});
     </script>
   

@@ -21,253 +21,271 @@
 
 function Tutorial()
 {
-	this.elementList        = new Array;
-	this.position           = 0;
-	this.lengthOfTutorial   = 0;
-	this.container          = "#tutorial";
-	this.items              = "#tutorial-items";
-	this.item_container     = "#tutorial-item-container";
-	this.item_outline       = true;
-	this.clicktrap          = "#tutorial-clicktrap";
-	this.zindex             = 10000;
-	this.item_zindex        = 10001;
-	this.overlay            = '#tutorial-overlay';
-	this.overlay_color      = '#000';
-	this.overlay_opacity    = '0.90';
-	this.transition_speed   = 200;
-	this.scroll_speed       = 500;
-	this.alternate_scroll   = false;
-	this.current_item;
-	this.animation_speed;
+    this.elementList        = new Array;
+    this.elementText        = new Array;
+    this.position           = 0;
+    this.lengthOfTutorial   = 0;
+    this.container          = "#tutorial";
+    this.items              = "#tutorial-items";
+    this.item_container     = "#tutorial-item-container";
+    this.item_outline       = true;
+    this.clicktrap          = "#tutorial-clicktrap";
+    this.zindex             = 10000;
+    this.item_zindex        = 10001;
+    this.overlay            = '#tutorial-overlay';
+    this.overlay_color      = '#000';
+    this.overlay_opacity    = '0.90';
+    this.transition_speed   = 200;
+    this.scroll_speed       = 500;
+    this.alternate_scroll   = false;
+    this.current_item;
+    this.animation_speed;
 
-	Tutorial.prototype.create = function()
-	{
-		var elem = document.createElement('div');
-		elem.id = 'tutorial';
-		document.body.appendChild(elem);
+    Tutorial.prototype.create = function()
+    {
+        var elem = document.createElement('div');
+        elem.id = 'tutorial';
+        document.body.appendChild(elem);
 
-		$(Tutorial.container).css({
-			'position':'fixed',
-			'height':'100%',
-			'width':'100%',
-			'z-index':Tutorial.zindex,
-			'top': 0,
-			'left': 0,
-			'display':'none'
-		});
+        $(Tutorial.container).css({
+            'position':'fixed',
+            'height':'100%',
+            'width':'100%',
+            'z-index':Tutorial.zindex,
+            'top': 0,
+            'left': 0,
+            'display':'none'
+        });
 
-		// create overlay
-		$(Tutorial.container).append("<div id='tutorial-overlay'></div>");
-		Tutorial.setup_overlay();
+        // create overlay
+        $(Tutorial.container).append("<div id='tutorial-overlay'></div>");
+        Tutorial.setup_overlay();
 
-		// create items container.
-		$(Tutorial.container).append("<div id='tutorial-items'></div>");
-	}
+        // create items container.
+        $(Tutorial.container).append("<div id='tutorial-items'></div>");
+    }
 
-	Tutorial.prototype.start = function()
-	{
-		Tutorial.position = -1;
-		$(Tutorial.container).fadeIn(Tutorial.animation_speed);
-		Tutorial.disable_scroll();
-		if(Tutorial.lengthOfTutorial > 0)
-			Tutorial.next();
-	}
+    Tutorial.prototype.start = function()
+    {
+        Tutorial.position = -1;
+        $(Tutorial.container).fadeIn(Tutorial.animation_speed);
+        Tutorial.disable_scroll();
+        if(Tutorial.lengthOfTutorial > 0)
+            Tutorial.next();
+    }
 
-	Tutorial.prototype.end = function()
-	{
-		Tutorial.current_item.destroy();
-		Tutorial.destroy();
-		$('html, body').animate({
-				scrollTop:0
-		});
-		Tutorial.enable_scroll();
+    Tutorial.prototype.end = function()
+    {
+        Tutorial.current_item.destroy();
+        Tutorial.destroy();
+        $('html, body').animate({
+                scrollTop:0
+        });
+        Tutorial.enable_scroll();
 
-	}
+    }
 
-	Tutorial.prototype.setup = function(items)
-	{
-		Tutorial.create();
-		Tutorial.lengthOfTutorial = items.length;
-		Tutorial.elementList = items;
-		Tutorial.animation_speed = Math.floor(this.transition_speed/2);
-	}
+    Tutorial.prototype.setup = function(hash)
+    {
+        var keys = (Object.keys(hash));
+        var values = Array();
+        for(var i=0; i<keys.length;i++)
+            values.push(hash[keys[i]]);
 
-	// prep the overlay with configurations.
-	Tutorial.prototype.setup_overlay = function()
-	{       
-		$(Tutorial.overlay).css({
-			'position':'absolute',
-			'height':'100%',
-			'width':'100%',
-			'z-index':Tutorial.overlay_zindex,
-			'background-color': Tutorial.overlay_color,
-			'opacity': Tutorial.overlay_opacity,
-			'top': 0,
-			'left': 0
-		});
-	}
+        Tutorial.create();
+        Tutorial.lengthOfTutorial = keys.length;
+        Tutorial.elementList = keys;
+        Tutorial.elementText = values;
+        Tutorial.animation_speed = Math.floor(this.transition_speed/2);
+    }
 
-	Tutorial.prototype.show = function(position)
-	{
-		// create container for item
-		$(Tutorial.items).append('<div class="tutorial-item-container" id="tutorial-item-container"></div>');
-		var item_container = $(Tutorial.item_container);
+    // prep the overlay with configurations.
+    Tutorial.prototype.setup_overlay = function()
+    {       
+        $(Tutorial.overlay).css({
+            'position':'absolute',
+            'height':'100%',
+            'width':'100%',
+            'z-index':Tutorial.overlay_zindex,
+            'background-color': Tutorial.overlay_color,
+            'opacity': Tutorial.overlay_opacity,
+            'top': 0,
+            'left': 0
+        });
+    }
 
-		// create item for container.
-		elem = Tutorial.elementList[position];
-		var item = new Tutorial_item(elem);
+    Tutorial.prototype.show = function(position)
+    {
+        // create container for item
+        $(Tutorial.items).append('<div class="tutorial-item-container" id="tutorial-item-container"></div>');
+        var item_container = $(Tutorial.item_container);
 
-		// insert into container.
-		$(item_container).append(item.element);
+        // create item for container.
+        elem = Tutorial.elementList[position];
+        var item = new Tutorial_item(elem);
 
-		var scrollTop = $(window).scrollTop();
+        // insert into container.
+        $(item_container).append(item.element);
 
-		// move container
-		$(item_container).css({
-			'position':'absolute',
-			'left': item.left,
-			'top': item.top-scrollTop,
-			'width': item.width,
-			'height': item.height,
-			'display': 'none'
-		});
+        var scrollTop = $(window).scrollTop();
 
-		// setup clicktrap
-		item.trap();
+        // move container
+        $(item_container).css({
+            'position':'absolute',
+            'left': item.left,
+            'top': item.top-scrollTop,
+            'width': item.width,
+            'height': item.height,
+            'display': 'none'
+        });
 
-		$(item_container).fadeIn(Tutorial.animation_speed);
+        // setup clicktrap
+        item.trap();
 
-		Tutorial.current_item = item;
-	}
+        // set up the tutorial text.
+        Tutorial.showText(item, Tutorial.elementText[position]);
 
-	Tutorial.prototype.hide = function()
-	{
-		if(Tutorial.current_item != null)
-		Tutorial.current_item.destroy();
-	}
+        // show the element
+        $(item_container).fadeIn(Tutorial.animation_speed);
 
-	Tutorial.prototype.next = function()
-	{
-		next = Tutorial.position+1;
-		if(next < Tutorial.lengthOfTutorial){
-			Tutorial.hide();
-			Tutorial.scroll_to(Tutorial.elementList[next]);
-			setTimeout(function(){Tutorial.show(next);}, Tutorial.animation_speed+Tutorial.scroll_speed+100);
-			Tutorial.position = next;
-		}
-		else
-			Tutorial.end();
-	}
+        Tutorial.current_item = item;
+    }
 
-	Tutorial.prototype.previous = function()
-	{
-		
-	}
+    Tutorial.prototype.hide = function()
+    {
+        if(Tutorial.current_item != null)
+        Tutorial.current_item.destroy();
+    }
 
-	Tutorial.prototype.scroll_to = function(elem)
-	{
-		var item = $("#"+elem);
-		if(item.length>0){
+    Tutorial.prototype.next = function()
+    {
+        next = Tutorial.position+1;
+        if(next < Tutorial.lengthOfTutorial){
+            Tutorial.hide();
+            Tutorial.scroll_to(Tutorial.elementList[next]);
+            setTimeout(function(){Tutorial.show(next);}, Tutorial.animation_speed+Tutorial.scroll_speed+100);
+            Tutorial.position = next;
+        }
+        else
+            Tutorial.end();
+    }
 
-			var scrollTop = $(window).scrollTop();
-			var windowHeight = $(window).height();
-			var itemHeight = $(item).height();
-			var itemTop = $(item).offset().top;
+    Tutorial.prototype.showText = function(item, text)
+    {
+        //
 
-			if(Tutorial.alternate_scroll == true)
-				scroll_value = (itemTop+itemHeight)-(windowHeight/2)-100;
-			else
-				scroll_value = itemTop-scrollTop-itemHeight;
+        // use the item to calculate textbox position.
+    }   
 
-			$('html, body').animate({
-				scrollTop:scroll_value
-			}, Tutorial.scroll_speed);
-		}
-		return true;
-	}
+    Tutorial.prototype.previous = function()
+    {
+        
+    }
 
-	Tutorial.prototype.disable_scroll = function()
-	{
-		$("body").css("overflow","hidden");
-		$(document).bind('mousewheel DOMMouseScroll',function(e){ 
-		if(!e){ /* IE7, IE8, Chrome, Safari */ 
-		e = window.event; 
-			}
-			if(e.preventDefault) { /* Chrome, Safari, Firefox */ 
-				e.preventDefault(); 
-			} 
-			e.returnValue = false;
-	});
-	}
+    Tutorial.prototype.scroll_to = function(elem)
+    {
+        var item = $("#"+elem);
+        if(item.length>0){
 
-	Tutorial.prototype.enable_scroll = function()
-	{
-		$("body").css("overflow","auto");
-		$(document).unbind('mousewheel DOMMouseScroll');
-	}
+            var scrollTop = $(window).scrollTop();
+            var windowHeight = $(window).height();
+            var itemHeight = $(item).height();
+            var itemTop = $(item).offset().top;
 
-	Tutorial.prototype.destroy = function()
-	{
-		elem = $(Tutorial.container);
-		elem.fadeOut(Tutorial.animation_speed, function(){$(Tutorial.items).html()});
-	}
+            if(Tutorial.alternate_scroll == true)
+                scroll_value = (itemTop+itemHeight)-(windowHeight/2)-100;
+            else
+                scroll_value = itemTop-scrollTop-itemHeight;
+
+            $('html, body').animate({
+                scrollTop:scroll_value
+            }, Tutorial.scroll_speed);
+        }
+        return true;
+    }
+
+    Tutorial.prototype.disable_scroll = function()
+    {
+        $("body").css("overflow","hidden");
+        $(document).bind('mousewheel DOMMouseScroll',function(e){ 
+        if(!e){ /* IE7, IE8, Chrome, Safari */ 
+        e = window.event; 
+            }
+            if(e.preventDefault) { /* Chrome, Safari, Firefox */ 
+                e.preventDefault(); 
+            } 
+            e.returnValue = false;
+    });
+    }
+
+    Tutorial.prototype.enable_scroll = function()
+    {
+        $("body").css("overflow","auto");
+        $(document).unbind('mousewheel DOMMouseScroll');
+    }
+
+    Tutorial.prototype.destroy = function()
+    {
+        elem = $(Tutorial.container);
+        elem.fadeOut(Tutorial.animation_speed, function(){$(Tutorial.items).html()});
+    }
 }
 
 function Tutorial_item(id)
 {
-	this.width;
-	this.height;
-	this.left;
-	this.right;
-	this.reference_id = id;
-	this.element;
+    this.width;
+    this.height;
+    this.left;
+    this.right;
+    this.reference_id = id;
+    this.element;
 
-	// do stuff. get the element.
-	select = "#"+id;
-	var original = $(select);
-	var clone = original.clone();
-	var position = original.position();
+    // do stuff. get the element.
+    select = "#"+id;
+    var original = $(select);
+    var clone = original.clone();
+    var position = original.position();
 
-	this.width = original.css('width');
-	this.height = original.css('height');
-	this.left = position.left;
-	this.top = position.top;
+    this.width = original.css('width');
+    this.height = original.css('height');
+    this.left = position.left;
+    this.top = position.top;
 
-	clone.css({
-		'position': 'absolute',
-		'width': original.css('width'),
-		'height': original.css('height'),
-	});
+    clone.css({
+        'position': 'absolute',
+        'width': original.css('width'),
+        'height': original.css('height'),
+    });
 
-	this.element = clone; 
+    this.element = clone; 
 
-	// add clicktrap to cloned item.
-	Tutorial_item.prototype.trap = function()
-	{
-		$(this.element).append('<div id="tutorial-clicktrap"></div>');
-		$(Tutorial.clicktrap).css({
-			'position':'absolute',
-			'height':'100%',
-			'width':'100%',
-			'top':0,
-			'left':0,
-			'cursor':'pointer',         
-		});
+    // add clicktrap to cloned item.
+    Tutorial_item.prototype.trap = function()
+    {
+        $(this.element).append('<div id="tutorial-clicktrap"></div>');
+        $(Tutorial.clicktrap).css({
+            'position':'absolute',
+            'height':'100%',
+            'width':'100%',
+            'top':0,
+            'left':0,
+            'cursor':'pointer',         
+        });
 
-		if(Tutorial.item_outline == true)
-			$(Tutorial.clicktrap).css({
-				'padding':'10px',
-				'margin': '-13px',
-				'border': 'dashed 3px #ffF'
-			});
-	}
+        if(Tutorial.item_outline == true)
+            $(Tutorial.clicktrap).css({
+                'padding':'10px',
+                'margin': '-13px',
+                'border': 'dashed 3px #ffF'
+            });
+    }
 
-	// destroy
-	Tutorial_item.prototype.destroy = function()
-	{
-		elem = this.element;
-		elem.fadeOut(Tutorial.animation_speed, function(){$(Tutorial.item_container).remove()});
-	}
+    // destroy
+    Tutorial_item.prototype.destroy = function()
+    {
+        elem = this.element;
+        elem.fadeOut(Tutorial.animation_speed, function(){$(Tutorial.item_container).remove()});
+    }
 }
 
 var Tutorial = new Tutorial;
