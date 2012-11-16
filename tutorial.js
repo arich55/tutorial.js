@@ -28,6 +28,7 @@ function Tutorial()
     this.container          = "#tutorial";
     this.items              = "#tutorial-items";
     this.item_container     = "#tutorial-item-container";
+    this.text_container     = "#tutorial-text-container";
     this.item_outline       = true;
     this.clicktrap          = "#tutorial-clicktrap";
     this.zindex             = 10000;
@@ -118,7 +119,12 @@ function Tutorial()
     {
         // create container for item
         $(Tutorial.items).append('<div class="tutorial-item-container" id="tutorial-item-container"></div>');
+
+        // create container for item text
+        $(Tutorial.items).append('<div class="tutorial-text-container" id="tutorial-text-container"></div>');
+
         var item_container = $(Tutorial.item_container);
+        var text_container = $(Tutorial.text_container);
 
         // create item for container.
         elem = Tutorial.elementList[position];
@@ -172,9 +178,22 @@ function Tutorial()
 
     Tutorial.prototype.showText = function(item, text)
     {
-        //
-
         // use the item to calculate textbox position.
+
+        // insert the text into the tutorial text container.
+        $(Tutorial.text_container).css({
+            'position':'absolute',
+            'top':'50%',
+            'left':'50%',
+            'color':'#fff',
+            'text-shadow':'0 1px 2px rgba(0,0,0,0.4)',
+            'padding':'20px',
+            'font-size':'2.5em',
+            'line-height':'1em'
+        });
+        $(Tutorial.text_container).html(text);
+
+
     }   
 
     Tutorial.prototype.previous = function()
@@ -284,7 +303,10 @@ function Tutorial_item(id)
     Tutorial_item.prototype.destroy = function()
     {
         elem = this.element;
-        elem.fadeOut(Tutorial.animation_speed, function(){$(Tutorial.item_container).remove()});
+        elem.fadeOut(Tutorial.animation_speed, function(){
+            $(Tutorial.item_container).remove();
+            $(Tutorial.text_container).remove();
+        });
     }
 }
 
